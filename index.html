@@ -42,9 +42,24 @@
         engine.loadFont("frogblock", "frogblock.ttf");
 
 
+        engine.add([
+            engine.pos(24, 24),
+            engine.text("- Type the word that starts with the last two letters of the previous word", {
+                font: "frogblock",
+                size: 18,
+            })
+        ]);
+
+        engine.add([
+            engine.pos(24, 48),
+            engine.text("- Press enter to play the word", {
+                font: "frogblock",
+                size: 18,
+            })
+        ]);
         
         const scoreText = engine.add([
-            engine.pos(24, 24),
+            engine.pos(24, 96),
             engine.text(`score: ${score}`, {
                 font: "frogblock",
                 size: 24,
@@ -52,7 +67,7 @@
         ]);
 
         const word = engine.add([
-            engine.pos(24, 100),
+            engine.pos(24, 144),
             engine.text(randomWord, {
                 font: "gamefont",
                 width: 320,
@@ -61,7 +76,7 @@
         ]);
 
         const input = engine.add([
-            engine.pos(24, 200),
+            engine.pos(24, 240),
             engine.text("", {
                 font: "gamefont",
                 width: 320,
