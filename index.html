@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project word</title>
+</head>
+<body>
+    <script type="module">
+        import dictionary from "./dictionary.json" with { type: "json" };
+        // import kaplay
+        import kaplay from "https://unpkg.com/kaplay@3001/dist/kaplay.mjs";
+        // start kaplay
+        const engine = kaplay({
+            debug: true,
+            global: false,
+            background: [162, 148, 249],
+        });
+
+        const hasAccent = (w) => {
+            const accentVowels = /[áéíóú]/
+            return accentVowels.test(w);
+        }
+
+        const getRandomWord = () => {
+            const keys = Object.keys(dictionary);
+            let randomIndex = Math.floor(Math.random() * keys.length);
+            while(hasAccent(keys[randomIndex])) {
+                randomIndex = Math.floor(Math.random() * keys.length);
+            }
+            return keys[randomIndex];
+        }
+
+        const exists = (w) => {
+            return dictionary[w] !== undefined;
+        }
+
+        let score = 0;
+        let randomWord = getRandomWord();
+
+        engine.loadBitmapFont("gamefont", "./polyfrog.png", 8, 8);
+        engine.loadFont("frogblock", "frogblock.ttf");
+
+
+        
+        const scoreText = engine.add([
+            engine.pos(24, 24),
+            engine.text(`score: ${score}`, {
+                font: "frogblock",
+                size: 24,
+            })
+        ]);
+
+        const word = engine.add([
+            engine.pos(24, 100),
+            engine.text(randomWord, {
+                font: "gamefont",
+                width: 320,
+                size: 24,
+            })
+        ]);
+
+        const input = engine.add([
+            engine.pos(24, 200),
+            engine.text("", {
+                font: "gamefont",
+                width: 320,
+                size: 24,
+            })
+        ]);
+
+        engine.onCharInput((char) => {
+            input.text += char;
+        });
+
+        engine.onKeyPressRepeat("backspace", () => {
+            input.text = input.text.substring(0, input.text.length - 1);
+        }); 
+        
+        engine.onKeyPress("enter", () => {
+            const lastTwo = word.text.substring(word.text.length - 2);
+            const firstTwo = input.text.substring(0, 2);
+            if (lastTwo === firstTwo) {
+                score += input.text.length;
+                randomWord = getRandomWord();
+                word.text = randomWord;
+                input.text = "";
+            }
+            scoreText.text = `score: ${score}`;
+        });
+    </script> 
+</body>
+</html>
